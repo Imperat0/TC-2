@@ -1,0 +1,15 @@
+{
+    "capacidade_veiculo": 200,
+    "qtd_pontos": 60,
+    "geracoes": 200,
+    "centro_sp": [-23.5505, -46.6333],
+    "zonas_transito": [
+        {"nome": "Av. Paulista", "coord": [-23.5611, -46.6559], "raio_km": 0.012, "intensidade": 0.7},
+        {"nome": "Marginal Tietê", "coord": [-23.5155, -46.6400], "raio_km": 0.018, "intensidade": 0.5},
+        {"nome": "Av. Rebouças", "coord": [-23.5667, -46.6833], "raio_km": 0.008, "intensidade": 0.8}
+    ],
+    "nomes_locais": [
+        "Hosp. Sírio-Libanês", "Hosp. Albert Einstein", "Santa Casa de SP",
+        "Hosp. 9 de Julho", "UBS Vila Mariana", "AMA Sé", "Laboratório Fleury"
+    ]
+}
