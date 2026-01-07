@@ -22,5 +22,5 @@ Este projeto foi desenvolvido como parte do **Tech Challenge (Fase 2)** da pós-
 
 1. **Clone o repositório:**
    ```bash
-   git clone [https://github.com/seu-usuario/seu-repositorio.git](https://github.com/seu-usuario/seu-repositorio.git)
-   cd seu-repositorio
+   git clone [https://github.com/Imperat0/TC-2.git](https://github.com/Imperat0/TC-2.git)
+   cd TC-2
