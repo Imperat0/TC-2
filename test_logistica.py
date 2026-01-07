@@ -1,7 +1,6 @@
 import unittest
 import algoritmo_genetico as ag
 
-
 class TestLogistica(unittest.TestCase):
     def setUp(self):
         self.pontos = [

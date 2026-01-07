@@ -1,7 +1,7 @@
 {
     "capacidade_veiculo": 200,
     "qtd_pontos": 60,
-    "geracoes": 200,
+    "geracoes": 1000,
     "centro_sp": [-23.5505, -46.6333],
     "zonas_transito": [
         {"nome": "Av. Paulista", "coord": [-23.5611, -46.6559], "raio_km": 0.012, "intensidade": 0.7},

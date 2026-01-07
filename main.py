@@ -59,7 +59,7 @@ def gerar_cenario(config):
 # --- ORQUESTRADOR DO PROJETO ---
 def executar_projeto():
     print("\n" + "=" * 60)
-    print("      SISTEMA DE OTIMIZAÇÃO VRP - DANIEL IMPERATO")
+    print("      SISTEMA DE OTIMIZAÇÃO VRP")
     print("=" * 60)
 
     # 1. Setup inicial
