@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  api-logistica:
+    build: .
+    container_name: medical_logistics_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+    volumes:
+      - .:/app
+    restart: always
