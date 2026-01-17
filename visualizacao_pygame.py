@@ -47,7 +47,7 @@ def normalizar_coordenadas(pontos, largura, altura, margem=80):
 def visualizar_rotas_pygame(rotas, pontos_dados, zonas_transito=[]):
     pygame.init()
     tela = pygame.display.set_mode((LARGURA, ALTURA))
-    pygame.display.set_caption("Smart Logistics Dashboard - Daniel Imperato")
+    pygame.display.set_caption("Smart Logistics VRP - Simulação de Rotas")
     clock = pygame.time.Clock()
 
     fonte_p = pygame.font.SysFont("Segoe UI", 12, bold=True)

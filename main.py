@@ -36,10 +36,8 @@ def gerar_cenario(config):
 
     # 2. Geração de Entregas (Hospitais)
     for i in range(1, config["qtd_pontos"]):
-        # Gera coordenadas num raio de ~8km do centro
         lat = centro_lat + random.uniform(-0.08, 0.08)
         lon = centro_lon + random.uniform(-0.08, 0.08)
-
         eh_critico = random.random() < 0.2
         nome_base = random.choice(config["nomes_locais"])
 
@@ -49,7 +47,7 @@ def gerar_cenario(config):
                 "nome": f"{nome_base} - Unidade {i}",
                 "coord": (lat, lon),
                 "prioridade": "crítica" if eh_critico else "regular",
-                "carga": random.randint(10, 40),
+                "carga": random.randint(5, 25),
                 "tipo": "entrega",
             }
         )
@@ -69,7 +67,7 @@ def executar_projeto():
 
     pontos_entrega = gerar_cenario(config)
 
-    # 2. Execução do Algoritmo Genético (VRP com Elitismo)
+    # 2. Execução do Algoritmo Genético
     print(
         f"\n[1/4] Otimizando {config['qtd_pontos']} locais para veículos de {config['capacidade_veiculo']}kg..."
     )
@@ -77,7 +75,7 @@ def executar_projeto():
         pontos_entrega, config["capacidade_veiculo"], geracoes=config["geracoes"]
     )
 
-    # 3. Geração do Gráfico de Convergência (Prova Técnica)
+    # 3. Geração do Gráfico
     print("\n[2/4] Gerando gráfico de performance (convergencia_logistica.png)...")
     plt.figure(figsize=(10, 5))
     plt.plot(historico, color="#2c3e50", linewidth=2)
@@ -90,15 +88,29 @@ def executar_projeto():
 
     # 4. Relatório Estratégico com Google Gemini
     print("\n[3/4] Solicitando parecer técnico à Inteligência Artificial...")
-    relatorio_ia = ia.gerar_instrucoes_llm(
-        rotas_finais, pontos_entrega, config["zonas_transito"]
-    )
-    print("\n" + "-" * 40)
-    print("INSIGHTS DA IA:")
-    print(relatorio_ia)
-    print("-" * 40)
 
-    # 5. Visualização no Pygame (Simulação com Trânsito Dinâmico)
+    # --- CORREÇÃO AQUI ---
+    # Certifique-se que no arquivo ia_relatorios.py a função se chama gerar_instrucoes_llm_v2
+    try:
+        relatorio_ia = ia.gerar_instrucoes_llm_v2(
+            rotas_finais, pontos_entrega, config["zonas_transito"]
+        )
+
+        print("\n" + "-" * 40)
+        print("🤖 INSIGHTS DA IA (ESTRUTURADO):")
+
+        # Formata o JSON para ficar bonito no terminal (Indentação de 2 espaços)
+        print(json.dumps(relatorio_ia, indent=2, ensure_ascii=False))
+        print("-" * 40)
+
+    except AttributeError:
+        print(
+            "⚠️ Erro: Verifique se o nome da função no arquivo ia_relatorios.py é 'gerar_instrucoes_llm_v2'"
+        )
+    except Exception as e:
+        print(f"⚠️ Erro na IA: {e}")
+
+    # 5. Visualização no Pygame
     print("\n[4/4] Iniciando Simulador Visual Interativo...")
     print(f"      -> Frota: {len(rotas_finais)} veículos operando.")
     vis_pg.visualizar_rotas_pygame(

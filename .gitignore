@@ -1,0 +1,11 @@
+# Ignorar arquivos de ambiente e cache
+.env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+# VSCode
+.vscode/
+# Outros arquivos comuns
+.DS_Store
+Thumbs.db

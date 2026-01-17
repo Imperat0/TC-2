@@ -31,7 +31,6 @@ def separar_rotas_por_capacidade(cromossomo, pontos, cap_max):
     return rotas_finais
 
 
-# --- NOVO: HEURÍSTICA DE BUSCA LOCAL 2-OPT ---
 def aplicar_2opt(rota, pontos):
     """
     Refina uma rota individual eliminando cruzamentos.
@@ -66,7 +65,7 @@ def aplicar_2opt(rota, pontos):
     return melhor_rota
 
 
-def funcao_fitness_vrp(cromossomo, pontos, cap_max):
+def funcao_fitness_vrp(cromossomo, pontos, cap_max, custo_por_km=1):
     rotas = separar_rotas_por_capacidade(cromossomo, pontos, cap_max)
     custo_total = 0
 
@@ -83,7 +82,7 @@ def funcao_fitness_vrp(cromossomo, pontos, cap_max):
             dist_rota += dist_trecho
             ponto_anterior = ponto_atual
         custo_total += dist_rota
-    return custo_total
+    return custo_total * custo_por_km
 
 
 # --- Operadores Genéticos ---
@@ -145,7 +144,8 @@ def executar_ga(pontos, cap_veiculo, geracoes=200, tam_populacao=50):
             melhor_global = copy.deepcopy(scores[0][0])
 
         historico_fitness.append(melhor_fitness_global)
-        print(f"Geração {g}: Custo = {melhor_fitness_global:.4f}")
+        distancia_km = melhor_fitness_global * 111.139
+        print(f"🔄 [Geração {g:03}] Melhor Rota: {distancia_km:.2f} km (Custo Técnico: {melhor_fitness_global:.4f})")
 
         nova_populacao = [melhor_global]
         while len(nova_populacao) < tam_populacao:
@@ -155,7 +155,6 @@ def executar_ga(pontos, cap_veiculo, geracoes=200, tam_populacao=50):
             nova_populacao.append(filho)
         populacao = nova_populacao
 
-    # --- REFINAMENTO FINAL COM 2-OPT ---
     print("\n[INFO] Aplicando Busca Local 2-opt para refinamento final...")
     rotas_finais = separar_rotas_por_capacidade(melhor_global, pontos, cap_veiculo)
     rotas_otimizadas = [aplicar_2opt(r, dict_pontos) for r in rotas_finais]
