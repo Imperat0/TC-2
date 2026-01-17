@@ -13,14 +13,11 @@ def gerar_instrucoes_llm_v2(rotas_finais, pontos_dados, zonas_transito):
     try:
         genai.configure(api_key=API_KEY)
 
-        # AJUSTE 1: Use um modelo válido e configure para JSON
-        # O 'response_mime_type' força a saída em JSON nativo (muito mais seguro)
         model = genai.GenerativeModel(
             "gemini-3-flash-preview",
             generation_config={"response_mime_type": "application/json"},
         )
 
-        # Preparação dos dados (Mantive sua lógica, apenas formatando para o prompt)
         dados_input = {"rotas": [], "transito": zonas_transito}
 
         for i, rota in enumerate(rotas_finais):
