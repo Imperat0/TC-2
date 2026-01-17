@@ -66,5 +66,4 @@ Uso do modelo **`gemini-3-flash-preview`** via API para análise semântica.
 
 1. **Clone o repositório:**
    ```bash
-   git clone [https://github.com/seu-usuario/smart-medical-logistics.git](https://github.com/seu-usuario/smart-medical-logistics.git)
-   cd smart-medical-logistics
+   git clone [https://github.com/Imperat0/TC-2.git](https://github.com/Imperat0/TC-2)
