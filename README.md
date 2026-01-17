@@ -33,7 +33,7 @@ Implementação pura em Python (sem bibliotecas de "caixa preta" para o GA), per
 
 2. Integração com Large Language Models (LLM)
 
-Utilização do modelo Gemini 1.5 Flash para pós-processamento de dados logísticos.
+Utilização do modelo gemini-3-flash-preview para pós-processamento de dados logísticos.
 
     Prompt Engineering: Uso de técnicas de Chain of Thought e Few-Shot Prompting.
 
