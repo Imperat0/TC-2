@@ -10,7 +10,7 @@ O projeto foi desenhado para resolver problemas de logística hospitalar crític
 
     Motor de Otimização (Core): Utiliza Algoritmos Genéticos para encontrar soluções sub-ótimas em tempo polinomial para um problema NP-Hard.
 
-    Camada de Inteligência (Analysis): Integração via API com Google Gemini 1.5 Flash para análise semântica de riscos, cruzando dados da rota gerada com zonas de tráfego simuladas.
+    Camada de Inteligência (Analysis): Integração via API com Google Gemini gemini-3-flash-preview para análise semântica de riscos, cruzando dados da rota gerada com zonas de tráfego simuladas.
 
     Camada de Visualização (Presentation): Simulação gráfica baseada em física (Pygame) para validação visual das rotas e monitoramento de KPIs.
 
