@@ -36,7 +36,7 @@ Implementação *from-scratch* (sem bibliotecas de caixa preta) para controle to
 * **Elitismo:** Preservação dos melhores indivíduos entre gerações.
 
 ### 2. Integração com LLM (GenAI)
-Uso do modelo **`gemini-3-flash-preview`** (ou `1.5-flash`) via API para análise semântica.
+Uso do modelo **`gemini-3-flash-preview`** via API para análise semântica.
 
 * **Prompt Engineering:** Utiliza *Few-Shot Prompting* e regras de negócio explícitas no prompt.
 * **Structured Output:** A IA é forçada a retornar um JSON estrito, permitindo que o sistema classifique riscos (🔴 Alto / 🟡 Médio / 🟢 Baixo) programaticamente.
