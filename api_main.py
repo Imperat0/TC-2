@@ -9,37 +9,43 @@ import uvicorn
 # --- INICIALIZAÇÃO DA API ---
 app = FastAPI(
     title="Smart Medical Logistics API",
-    description="API para otimização de rotas hospitalares e análise via GenAI.",
+    description="API para otimização de rotas hospitalares e análise via Inteligência Artificial.",
     version="2.0",
 )
 
-# --- CONFIGURAÇÃO DE CORS (Essencial para Angular) ---
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Em produção, troque "*" pelo URL do seu Angular
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
-
-# --- SCHEMAS DE DADOS (Modelos) ---
+# --- MODELOS DE DADOS (DTOs) ---
 class ZonaTransito(BaseModel):
+    """
+    Define áreas de trânsito ou zonas de risco que podem influenciar a análise da IA.
+    """
+
     nome: str
     intensidade: float
     raio_km: float
 
 
 class Ponto(BaseModel):
+    """
+    Representa um local (nó) no mapa, seja um hospital, paciente ou depósito.
+    """
+
     id: int
     nome: str
-    coord: List[float] = Field(..., description="[Latitude, Longitude]")
+    coord: List[float] = Field(
+        ..., description="Coordenadas geográficas [Latitude, Longitude]"
+    )
     tipo: str
     carga: int = 0
-    prioridade: str = "regular"
+    prioridade: str = "regular"  # Pode ser 'critica', 'alta' ou 'regular'
 
 
 class ConfigOtimizacao(BaseModel):
+    """
+    Estrutura de entrada para o pedido de otimização de rotas.
+    Contém todos os pontos a serem visitados e as restrições do veículo.
+    """
+
     pontos: List[Ponto]
     capacidade_veiculo: int
     geracoes: int = 100
@@ -47,26 +53,36 @@ class ConfigOtimizacao(BaseModel):
 
 
 class RequestRelatorio(BaseModel):
+    """
+    Estrutura de entrada para solicitar apenas a análise da IA sobre rotas já existentes.
+    """
+
     rotas: List[List[int]]
     pontos: List[Ponto]
     zonas: List[ZonaTransito]
 
 
-# --- ENDPOINTS ---
+# --- ENDPOINTS (ROTAS DA API) ---
 
 
 @app.get("/", tags=["Status"])
 def read_root():
+    """
+    Verificação de saúde da API (Health Check).
+    """
     return {"status": "Online", "service": "Smart Medical Logistics VRP"}
 
 
-@app.post("/otimizar", tags=["Core"])
+@app.post("/otimizar", tags=["Otimizacao"])
 async def otimizar_rota(config: ConfigOtimizacao):
     """
-    Executa apenas o Algoritmo Genético e retorna as rotas numéricas.
+    Executa exclusivamente o Algoritmo Genético (VRP).
+
+    Entrada: Lista de pontos e capacidade do veículo.
+    Saída: As rotas otimizadas (listas de IDs) e o histórico de convergência.
     """
     try:
-        # Pydantic V2 usa model_dump() ao invés de dict()
+        # Serializa os objetos Pydantic para dicionários Python
         pontos_processados = [p.model_dump() for p in config.pontos]
 
         rotas, historico = ag.executar_ga(
@@ -79,44 +95,51 @@ async def otimizar_rota(config: ConfigOtimizacao):
             "historico_convergencia": historico,
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erro no GA: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Erro interno no Algoritmo Genético: {str(e)}"
+        )
 
 
-@app.post("/relatorio", tags=["AI Analysis"])
+@app.post("/relatorio", tags=["Analise IA"])
 async def gerar_relatorio_ia(dados: RequestRelatorio):
     """
-    Gera apenas a análise textual/JSON da IA com base em rotas já existentes.
+    Executa exclusivamente a análise de Inteligência Artificial.
+    Útil quando já se tem as rotas e deseja-se apenas gerar os insights textuais.
     """
     try:
-        # Converte para dicionários para passar para a função legada
         pontos_dict = [p.model_dump() for p in dados.pontos]
         zonas_dict = [z.model_dump() for z in dados.zonas]
 
-        # IMPORTANTE: Verifique se no seu arquivo ia_relatorios a função é v2 ou a normal
+        # Chama o módulo de IA para gerar insights sobre as rotas fornecidas
         relatorio = ia.gerar_instrucoes_llm_v2(dados.rotas, pontos_dict, zonas_dict)
-        return relatorio  # Já retorna o JSON estruturado da IA
+        return relatorio
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erro na IA: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Erro interno no módulo de IA: {str(e)}"
+        )
 
 
-@app.post("/solucao-completa", tags=["Full Flow"])
+@app.post("/solucao-completa", tags=["Fluxo Completo"])
 async def executar_processo_completo(config: ConfigOtimizacao):
     """
-    🚀 ENDPOINT MÁGICO: Executa Otimização + Análise de IA em uma única chamada.
-    Ideal para o Front-end chamar apenas uma vez.
+    Executa o fluxo completo: Otimização Matemática + Análise de IA.
+
+    1. O Algoritmo Genético cria as melhores rotas.
+    2. A IA analisa essas rotas considerando zonas de trânsito e prioridades.
+    3. Retorna um objeto consolidado com rotas e relatórios.
     """
     try:
-        # 1. Executa GA
+        # Passo 1: Otimização (Algoritmo Genético)
         pontos_processados = [p.model_dump() for p in config.pontos]
         rotas, historico = ag.executar_ga(
             pontos_processados, config.capacidade_veiculo, geracoes=config.geracoes
         )
 
-        # 2. Executa IA
+        # Passo 2: Análise (Inteligência Artificial)
         zonas_dict = [z.model_dump() for z in config.zonas_transito]
         analise_ia = ia.gerar_instrucoes_llm_v2(rotas, pontos_processados, zonas_dict)
 
-        # 3. Retorna tudo junto
+        # Passo 3: Retorno Consolidado
         return {
             "meta_info": {"custo_rota": historico[-1], "geracoes": config.geracoes},
             "rotas": rotas,
@@ -124,7 +147,9 @@ async def executar_processo_completo(config: ConfigOtimizacao):
         }
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Erro no fluxo completo: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Erro no processamento completo: {str(e)}"
+        )
 
 
 if __name__ == "__main__":
